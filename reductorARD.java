@@ -21,6 +21,8 @@ public class reductorARD {
 		ArrayList<String> reductoFinal = new ArrayList<String>();
 		ArrayList<String> tablatres = new ArrayList<String>();
 		ArrayList<String> tablacuatro = new ArrayList<String>();
+		
+		//SE buscan los estados de no aceptación, se separan y se ponen en noAcepta
 		for( int i=0; i< quintupla.length; i++)
 		{
 		    estatus = true;
@@ -28,6 +30,7 @@ public class reductorARD {
 		        if(j>0)
 		        	for (int k = 0; k<eAceptacion.length; k++)
 		        {
+		        		// 
 		        if(quintupla[i][j-1] != quintupla[i][j] ||quintupla[i][j] == Integer.parseInt(eAceptacion[k]) || Integer.parseInt(eAceptacion[k]) == i)
 		            estatus = false;
 		        }
@@ -35,7 +38,8 @@ public class reductorARD {
 		        noAcepta.add(i);
 		}
 		
-		
+		//Se verifica si existen estados no aceptación y en caso de  que existan o no, se calculan los estados de transicion
+		//Y se meten en un vector
 		if(noAcepta.size() == 0) {
 			int contador = 0;
 			boolean tranc = false;
@@ -83,6 +87,8 @@ public class reductorARD {
 				
 		}
 		
+		
+		
 	for(int i=0; i<transicion.length;i++) {
 		if(i==transicion.length-1) {
 			c0+=transicion[i];
@@ -119,8 +125,7 @@ for(int i=0; i<noAcepta.size();i++) {
 		c1+=noAcepta.get(i)+",";
 	}
 }
-		
-		//Se crea la matriz con nuevos valores
+		//Se crea la segunda matriz con los nuevos valores agrupados
 		matriz2 = new String[estados][quintupla[0].length];
 		
 		for( int i=0; i< quintupla.length; i++)
@@ -129,7 +134,7 @@ for(int i=0; i<noAcepta.size();i++) {
 		    {
 		    		for(int k=0; k<transicion.length; k++)		
 		    			if(quintupla[i][j] == transicion[k])
-		    				matriz2[i][j] = c0;
+		    				matriz2[i][j] = c0; 
 		    		for(int z=0; z<noAcepta.size(); z++)
 		    			if(quintupla[i][j] == noAcepta.get(z))
 		    				matriz2[i][j] = c1;
@@ -138,7 +143,9 @@ for(int i=0; i<noAcepta.size();i++) {
 		    				matriz2[i][j] = c2;
 		    		}   			
 		    	}
-		
+		//C0	  C3
+		//C1{1,2} C2{0,3}1,2_0,3 
+		//C1  	  C2   {1,2_0,3}
 
 		for(int i=0; i<matriz2.length; i++)
 		{
@@ -172,6 +179,9 @@ for(int i=0; i<noAcepta.size();i++) {
 	    	}
 		}
 		
+		// C1  C2	|_______________
+		// C1  C2	|{0,1_2,3}
+		// C0  C1	|{2,4_4}
 		for(int x=matriz2.length-1; x<matriz2.length; x++) {
     		boolean isPerron = false;
     		perron2 ="";
