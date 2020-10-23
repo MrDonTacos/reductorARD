@@ -279,4 +279,55 @@ matriz3 = new String[estados][quintupla[0].length];
 	*/
 	return reductoFinal;	
 	}
+	
+	public String analizarAutomata(ArrayList<String> abc, ArrayList<String> automata, ArrayList<String> Palabra, int tamaño)
+	{
+		String estado = "";
+		int [][] quintupla = new int[automata.size()][tamaño];
+		boolean isIn = false;
+		int count = 0;
+		int y = 0;
+		int f =0;
+		for (var arreglo : automata)
+		{
+				if(!arreglo.isEmpty())
+				{					
+						for(int j = 0; j< tamaño; j++)
+							quintupla[f][j] = Integer.parseInt(arreglo.split("_")[j]);
+				}
+				f++;
+		}
+		/*		___a___b__c__d__e___
+		 *	0	|  1   0  2  1  3   abc
+		 * 	1	|  2   4  1  0  2
+		 * 	2	|  1   2  0  4  0
+		 * 	3	|  1   1  1  4  0
+		 * 	4	|  0   1  1  1  1
+		 * 
+		 * ab			0 
+		 * a
+		 */
+		for(var item: Palabra) //abaca
+		{
+			count = 0;
+			for(var item2: abc) // a, b, c
+			{
+				if(item == item2)
+					for (int i=y;i<quintupla.length;i++ ) 
+					{
+						for (int j=count; j<quintupla[0].length; j++)
+						{
+							y = quintupla[i][j];
+							estado = i + " , " +j;
+							break;
+						}
+						
+						break;
+					}
+				count++;
+			}
+		}
+		
+		return estado;
+	}
 }
