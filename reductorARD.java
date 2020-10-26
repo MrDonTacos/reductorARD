@@ -293,7 +293,7 @@ matriz3 = new String[estados][quintupla[0].length];
 				if(!arreglo.isEmpty())
 				{					
 						for(int j = 0; j< tamaño; j++)
-							quintupla[f][j] = Integer.parseInt(arreglo.split("_")[j]);
+							quintupla[f][j] = Integer.parseInt(arreglo.split("//w")[j]);
 				}
 				f++;
 		}
@@ -329,5 +329,38 @@ matriz3 = new String[estados][quintupla[0].length];
 		}
 		
 		return estado;
+	}
+	
+	public String analizarAutomataNoReducido(ArrayList<String> abc, int[][] quintupla, ArrayList<String> Palabra) {
+		int count=0;
+		int y=0;
+		String estado="";
+		for(var item: Palabra) //abaca
+		{
+			count = 0;
+			for(var item2: abc) // a, b, c
+			{
+				if(item.equals(item2))
+					for (int i=y;i<quintupla.length;i++ ) 
+					{
+						for (int j=count; j<quintupla[0].length; j++)
+						{
+							y = quintupla[i][j];
+							estado = i + " , " +j;
+							break;
+						}
+						
+						break;
+					}
+			
+				count++;
+		
+			}
+		}
+		estado= String.valueOf(y);
+		return estado;
+		
+		
+		
 	}
 }
