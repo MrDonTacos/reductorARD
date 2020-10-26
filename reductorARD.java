@@ -13,7 +13,7 @@ public class reductorARD {
 	String transicion02 = "";
 		boolean estatus = true;
 		String [][] matriz2;
-		String [][] matrizPrueba;
+		ArrayList <String> matrizQ0CX = new ArrayList<String>();
 		String [][] matriz3;
 		int aceptacion [][];
 		int transicion[];
@@ -134,7 +134,7 @@ for(int i=0; i<noAcepta.size();i++) {
 		    				matriz2[i][j] = String.valueOf(1); 
 		    		for(int x=0; x<eAceptacion.length; x++)
 		    			if(quintupla[i][j] == Integer.parseInt(eAceptacion[x]))
-		    				matriz2[i][j] = String.valueOf(2);
+		    				matriz2[i][j] = String.valueOf(0);
 		    }   			
 		 }
 		
@@ -159,7 +159,7 @@ for(int i=0; i<noAcepta.size();i++) {
 	    			transicion01 += matriz2[i][j] + "_";
 	    	{
 	    	for(int x=0; x<matriz2.length; x++) {
-	    		if(i != x)
+	    		if(i != x || i == matriz2.length-1)
 	    		{	    	
 	    		boolean compararTransiciion = false;
 	    		if(x== matriz2.length-1)
@@ -228,8 +228,42 @@ for(int i=0; i<noAcepta.size();i++) {
 		 * reducto.add(transicion02); } }
 		 */
 		
+		
 		//Parte para meter en un nuevo arraylist los 
 		//elementos correspondientes a los Q0X correspondientes
+		for(int x=0; x<matriz2.length; x++) 
+		{
+			boolean isAcepta = false;
+			int counter = 0;
+			String temp = "";
+			for (int i =0; i <matriz2[0].length; i++)
+			{
+				
+				if(i == matriz2[0].length-1)
+					temp += matriz2[x][i];
+				else
+					temp += matriz2[x][i] + "_";
+			}
+			for (int j=0; j<eAceptacion.length; j++)
+			{
+				if(x==Integer.parseInt(eAceptacion[j]))
+					isAcepta = true;
+			}
+			temp+= "," + isAcepta;
+			for(var item: tablatres)
+			{
+				if(item.equals(temp))
+				{
+					if(matrizQ0CX.size()<=counter)
+						matrizQ0CX.add(String.valueOf(x));
+					else
+						matrizQ0CX.set(counter, matrizQ0CX.get(counter) + "," +String.valueOf(x));
+				}
+				counter++;
+			}
+		}
+		
+		
 		
 		/*	1: {1}
 		 * 	2: {2}
@@ -246,23 +280,32 @@ for(int i=0; i<noAcepta.size();i++) {
 		
 matriz3 = new String[estados][quintupla[0].length];
 		
-		for( int i=0; i< quintupla.length; i++)
+		for(int i=0; i< quintupla.length; i++)
 		{
 		    for(int j=0; j<quintupla[0].length; j++)
 		    {
-		    		for(var item : tablatres)
+		    		int counter = 0;
+		    		for(var item : matrizQ0CX)
 		    		{
-		    		for(int k=0; k<item.split(",").length; k++)		
-		    			if(quintupla[i][j] == Integer.parseInt(item.split(",")[k]))
-		    			{		    				
-		    				matriz3[i][j] = item;
-		    				break;
-		    			}
+		    			for(int k=0; k<item.split(",").length; k++)		
+		    				if(quintupla[i][j] == Integer.parseInt(item.split(",")[k]))
+		    				{		    				
+		    					matriz3[i][j] = String.valueOf(counter);
+		    				}
+		    			counter++;
 		    		}
-		    		}   			
-		    	}
+		    }   			
+		}
+		
+		
+		
+		
 		for(int i=0; i<matriz3.length; i++)
 		{
+			boolean isAcepta = false;
+			for(int r = 0; r<eAceptacion.length; r++)
+				if(Integer.parseInt(eAceptacion[r]) == i)
+					isAcepta = true;
 			String estado = String.valueOf(i);
 			transicion01 = "";
 	    	for(int j=0; j<matriz3[0].length; j++)
@@ -270,47 +313,59 @@ matriz3 = new String[estados][quintupla[0].length];
 	    			transicion01 += matriz3[i][j];
 	    		else
 	    			transicion01 += matriz3[i][j] + "_";
-	    	for(int x=i+1; x<matriz3.length; x++) {
+	    	{
+	    	for(int x=0; x<matriz3.length; x++) {
+	    		if(i != x || i == matriz2.length-1)
+	    		{	    	
 	    		boolean compararTransiciion = false;
+	    		if(x== matriz3.length-1)
+	    		{
+	    			for(int z = 0; z<reductoFinal.size(); z++) 
+						  if(tablacuatro.get(z).toString().equals(transicion01 + "," + isAcepta))
+							  compararTransiciion = true; 
+				  if(!compararTransiciion) 
+				  {
+					  tablacuatro.add(transicion01 + "," + isAcepta); 
+					  reductoFinal.add(transicion01 ); 
+				  break;
+				  }
+	    		}
 	    		transicion02 ="";
+	    		boolean isNoAcepta = false;
+				for(int r = 0; r<noAcepta.size(); r++)
+					if(noAcepta.get(r) == x)
+						isNoAcepta = true;
+	    		
 	    		for(int k=0; k<matriz3[0].length; k++)    
 	    			if (k == matriz3[0].length -1)
 	    				transicion02 += matriz3[x][k];
 	    			else
 	    				transicion02 += matriz3[x][k] + "_"; 
-	    		if(transicion01.equals(transicion02))
+	    		
+	    		//Si transicion01 no se encuentra dentro de eAcepta[] e
+	    		if(tablacuatro.equals(transicion02) && isAcepta != isNoAcepta)
     			{
-	    			for(int z = 0; z<reductoFinal.size(); z++)
-	    				for(int r = 0; r<eAceptacion.length; r++)
-	    				if(reductoFinal.get(z).toString() == transicion01 && i != Integer.parseInt(eAceptacion[r]))
-	    					compararTransiciion = true;
-	    			if(!compararTransiciion)
-	    			{
-	    			tablacuatro.add(estado+= "," +x);
-	    			reductoFinal.add(transicion01);
-	    			}
+					  for(int z = 0; z<reductoFinal.size(); z++) 
+							  if(reductoFinal.get(z).toString().equals(transicion01 + "," + isAcepta))
+								  compararTransiciion = true; 
+					  if(!compararTransiciion) 
+					  {
+						  if(isAcepta)
+							  tablacuatro.add(transicion01 + "," + isAcepta);
+						  else
+							  
+					  reductoFinal.add(transicion01); 
+					  break;
+					  }
+					 
     			}
+	    	}
+
+    		}
 	    	}
 		}
 		
-		for(int x=matriz3.length-1; x<matriz3.length; x++) {
-    		boolean compararTransiciion = false;
-    		transicion02 ="";
-    		for(int k=0; k<matriz3[0].length; k++)    
-    			if (k == matriz3[0].length -1)
-    				transicion02 += matriz3[x][k];
-    			else
-    				transicion02 += matriz3[x][k] + "_"; 
-    			for(int z = 0; z<reductoFinal.size(); z++)
-    				for(int r = 0; r<eAceptacion.length; r++)
-    				if(reductoFinal.get(z).toString() == transicion02 && x != Integer.parseInt(eAceptacion[r]))
-    					compararTransiciion = true;
-    			if(!compararTransiciion)
-    			{    			
-    			tablacuatro.add(String.valueOf(x));
-    			reductoFinal.add(transicion02);
-    			}
-    	}
+		
 	/*
 	q1 =	c0 c1   {q1}
 	q2 =	c1 c2	{q2,q7}
@@ -320,7 +375,7 @@ matriz3 = new String[estados][quintupla[0].length];
 	q6 =	c1 c1
 	q7 =	c1 c2
 	*/
-	return reductoFinal;	
+	return tablacuatro;	
 	}
 	
 	
