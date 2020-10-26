@@ -9,10 +9,11 @@ public class reductorARD {
 	String c0 = "";
 	String c1="";
 	String c2="";
-	String perron1 = "";
-	String perron2 = "";
+	String transicion01 = "";
+	String transicion02 = "";
 		boolean estatus = true;
 		String [][] matriz2;
+		String [][] matrizPrueba;
 		String [][] matriz3;
 		int aceptacion [][];
 		int transicion[];
@@ -54,7 +55,7 @@ public class reductorARD {
 				}
 				if(!tranc)
 				{
-					transicion[contador]=i;
+					noAcepta.add(i);;
 					contador++;
 				}
 				
@@ -77,7 +78,7 @@ public class reductorARD {
 					}
 					if(!tranc)
 					{
-						transicion[contador]=i;
+						noAcepta.add(i);
 						contador++;
 						break;
 					}
@@ -86,18 +87,6 @@ public class reductorARD {
 			}
 				
 		}
-		
-		
-		
-	for(int i=0; i<transicion.length;i++) {
-		if(i==transicion.length-1) {
-			c0+=transicion[i];
-		}
-		else {
-			c0+=transicion[i]+",";
-		}
-		
-	}
 	
 	
 	
@@ -119,12 +108,20 @@ for(int i=0; i<noAcepta.size();i++) {
 
 	
 	if(i==noAcepta.size()-1) {
-		c1+=noAcepta.get(i);
+		c0+=noAcepta.get(i);
 	}
 	else {
-		c1+=noAcepta.get(i)+",";
+		c0+=noAcepta.get(i)+",";
 	}
 }
+
+
+
+		/* 
+		 * C0 = {Estado de no aceptación}
+		 * C2 = {Estados de Aceptación}
+		 */
+
 		//Se crea la segunda matriz con los nuevos valores agrupados
 		matriz2 = new String[estados][quintupla[0].length];
 		
@@ -132,72 +129,109 @@ for(int i=0; i<noAcepta.size();i++) {
 		{
 		    for(int j=0; j<quintupla[0].length; j++)
 		    {
-		    		for(int k=0; k<transicion.length; k++)		
-		    			if(quintupla[i][j] == transicion[k])
-		    				matriz2[i][j] = c0; 
-		    		for(int z=0; z<noAcepta.size(); z++)
-		    			if(quintupla[i][j] == noAcepta.get(z))
-		    				matriz2[i][j] = c1;
+		    		for(int k=0; k<noAcepta.size(); k++)		
+		    			if(quintupla[i][j] == noAcepta.get(k))
+		    				matriz2[i][j] = String.valueOf(1); 
 		    		for(int x=0; x<eAceptacion.length; x++)
 		    			if(quintupla[i][j] == Integer.parseInt(eAceptacion[x]))
-		    				matriz2[i][j] = c2;
-		    		}   			
-		    	}
-		//C0	  C3
-		//C1{1,2} C2{0,3}1,2_0,3 
-		//C1  	  C2   {1,2_0,3}
-
+		    				matriz2[i][j] = String.valueOf(2);
+		    }   			
+		 }
+		
+		/*		_______
+		 * 	q0|	Q1	Q0 
+		 * 	q1| Q1  Q1
+		 * 	q2|	Q0	Q1
+		 * 
+		 */
 		for(int i=0; i<matriz2.length; i++)
 		{
+			boolean isAcepta = false;
+			for(int r = 0; r<eAceptacion.length; r++)
+				if(Integer.parseInt(eAceptacion[r]) == i)
+					isAcepta = true;
 			String estado = String.valueOf(i);
-			perron1 = "";
+			transicion01 = "";
 	    	for(int j=0; j<matriz2[0].length; j++)
 	    		if (j == matriz2[0].length -1)
-	    			perron1 += matriz2[i][j];
+	    			transicion01 += matriz2[i][j];
 	    		else
-	    			perron1 += matriz2[i][j] + "_";
-	    	for(int x=i+1; x<matriz2.length; x++) {
-	    		boolean isPerron = false;
-	    		perron2 ="";
+	    			transicion01 += matriz2[i][j] + "_";
+	    	{
+	    	for(int x=0; x<matriz2.length; x++) {
+	    		if(i != x)
+	    		{	    	
+	    		boolean compararTransiciion = false;
+	    		if(x== matriz2.length-1)
+	    		{
+	    			for(int z = 0; z<reducto.size(); z++) 
+						  if(reducto.get(z).toString().equals(transicion01))
+							  compararTransiciion = true; 
+				  if(!compararTransiciion) 
+				  {
+				  tablatres.add(transicion01 + "," + isAcepta); 
+				  reducto.add(transicion01 ); 
+				  break;
+				  }
+	    		}
+	    		transicion02 ="";
+	    		boolean isNoAcepta = false;
+				for(int r = 0; r<noAcepta.size(); r++)
+					if(noAcepta.get(r) == x)
+						isNoAcepta = true;
+	    		
 	    		for(int k=0; k<matriz2[0].length; k++)    
 	    			if (k == matriz2[0].length -1)
-	    				perron2 += matriz2[x][k];
+	    				transicion02 += matriz2[x][k];
 	    			else
-	    				perron2 += matriz2[x][k] + "_"; 
-	    		if(perron1.equals(perron2))
+	    				transicion02 += matriz2[x][k] + "_"; 
+	    		
+	    		//Si transicion01 no se encuentra dentro de eAcepta[] e
+	    		if(transicion01.equals(transicion02) && isAcepta != isNoAcepta)
     			{
-	    			for(int z = 0; z<reducto.size(); z++)
-	    				for(int r = 0; r<eAceptacion.length; r++)
-	    				if(reducto.get(z).toString() == perron1 && i != Integer.parseInt(eAceptacion[r]))
-	    					isPerron = true;
-	    			if(!isPerron)
-	    			{
-	    			tablatres.add(estado+= "," +x);
-	    			reducto.add(perron1);
-	    			}
+					  for(int z = 0; z<reducto.size(); z++) 
+							  if(reducto.get(z).toString().equals(transicion01))
+								  compararTransiciion = true; 
+					  if(!compararTransiciion) 
+					  {
+					  tablatres.add(transicion01 + "," + isAcepta); 
+					  reducto.add(transicion01 ); 
+					  break;
+					  }
+					 
     			}
+	    	}
+
+    		}
 	    	}
 		}
 		
-		// C1  C2	|_______________
-		// C1  C2	|{0,1_2,3}
-		// C0  C1	|{2,4_4}
+		// = C1 {0,1,2,3}
+		// = C0 {2,4} //SOLO DEBE REPRESENTAR DOS ESTADOS NO TRES COMO MUESTRA EL EJEMPLO
+		// = C2 {5}
+		// 			|_______________
+		// Q0		|{0,1_2,3} 	= {C1, C1} 
+		// Q1		|{2,4_5} 	= {C0, C2} 
+		// Q2		|{2,4_5} 	= {C0, C2}
+		
+		
+		
 		for(int x=matriz2.length-1; x<matriz2.length; x++) {
-    		boolean isPerron = false;
-    		perron2 ="";
+    		boolean compararTransiciion = false;
+    		transicion02 ="";
     		for(int k=0; k<matriz2[0].length; k++)    
     			if (k == matriz2[0].length -1)
-    				perron2 += matriz2[x][k];
+    				transicion02 += matriz2[x][k];
     			else
-    				perron2 += matriz2[x][k] + "_"; 
+    				transicion02 += matriz2[x][k] + "_"; 
     			for(int z = 0; z<reducto.size(); z++)
     				for(int r = 0; r<eAceptacion.length; r++)
-    				if(reducto.get(z).toString() == perron2 && x != Integer.parseInt(eAceptacion[r]))
-    					isPerron = true;
-    			if(!isPerron)
+    				if(reducto.get(z).toString() == transicion02 && x != Integer.parseInt(eAceptacion[r]))
+    					compararTransiciion = true;
+    			if(!compararTransiciion)
     			{    				
     			tablatres.add(String.valueOf(x));
-    			reducto.add(perron2);
+    			reducto.add(transicion02);
     			}
     	}
 		
@@ -221,51 +255,51 @@ matriz3 = new String[estados][quintupla[0].length];
 		for(int i=0; i<matriz3.length; i++)
 		{
 			String estado = String.valueOf(i);
-			perron1 = "";
+			transicion01 = "";
 	    	for(int j=0; j<matriz3[0].length; j++)
 	    		if (j == matriz3[0].length -1)
-	    			perron1 += matriz3[i][j];
+	    			transicion01 += matriz3[i][j];
 	    		else
-	    			perron1 += matriz3[i][j] + "_";
+	    			transicion01 += matriz3[i][j] + "_";
 	    	for(int x=i+1; x<matriz3.length; x++) {
-	    		boolean isPerron = false;
-	    		perron2 ="";
+	    		boolean compararTransiciion = false;
+	    		transicion02 ="";
 	    		for(int k=0; k<matriz3[0].length; k++)    
 	    			if (k == matriz3[0].length -1)
-	    				perron2 += matriz3[x][k];
+	    				transicion02 += matriz3[x][k];
 	    			else
-	    				perron2 += matriz3[x][k] + "_"; 
-	    		if(perron1.equals(perron2))
+	    				transicion02 += matriz3[x][k] + "_"; 
+	    		if(transicion01.equals(transicion02))
     			{
 	    			for(int z = 0; z<reductoFinal.size(); z++)
 	    				for(int r = 0; r<eAceptacion.length; r++)
-	    				if(reductoFinal.get(z).toString() == perron1 && i != Integer.parseInt(eAceptacion[r]))
-	    					isPerron = true;
-	    			if(!isPerron)
+	    				if(reductoFinal.get(z).toString() == transicion01 && i != Integer.parseInt(eAceptacion[r]))
+	    					compararTransiciion = true;
+	    			if(!compararTransiciion)
 	    			{
 	    			tablacuatro.add(estado+= "," +x);
-	    			reductoFinal.add(perron1);
+	    			reductoFinal.add(transicion01);
 	    			}
     			}
 	    	}
 		}
 		
 		for(int x=matriz3.length-1; x<matriz3.length; x++) {
-    		boolean isPerron = false;
-    		perron2 ="";
+    		boolean compararTransiciion = false;
+    		transicion02 ="";
     		for(int k=0; k<matriz3[0].length; k++)    
     			if (k == matriz3[0].length -1)
-    				perron2 += matriz3[x][k];
+    				transicion02 += matriz3[x][k];
     			else
-    				perron2 += matriz3[x][k] + "_"; 
+    				transicion02 += matriz3[x][k] + "_"; 
     			for(int z = 0; z<reductoFinal.size(); z++)
     				for(int r = 0; r<eAceptacion.length; r++)
-    				if(reductoFinal.get(z).toString() == perron2 && x != Integer.parseInt(eAceptacion[r]))
-    					isPerron = true;
-    			if(!isPerron)
+    				if(reductoFinal.get(z).toString() == transicion02 && x != Integer.parseInt(eAceptacion[r]))
+    					compararTransiciion = true;
+    			if(!compararTransiciion)
     			{    			
     			tablacuatro.add(String.valueOf(x));
-    			reductoFinal.add(perron2);
+    			reductoFinal.add(transicion02);
     			}
     	}
 	/*
@@ -279,6 +313,8 @@ matriz3 = new String[estados][quintupla[0].length];
 	*/
 	return reductoFinal;	
 	}
+	
+	
 	
 	public String analizarAutomata(ArrayList<String> abc, ArrayList<String> automata, ArrayList<String> Palabra, int tamaño)
 	{
