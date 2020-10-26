@@ -165,7 +165,7 @@ for(int i=0; i<noAcepta.size();i++) {
 	    		if(x== matriz2.length-1)
 	    		{
 	    			for(int z = 0; z<reducto.size(); z++) 
-						  if(reducto.get(z).toString().equals(transicion01))
+						  if(tablatres.get(z).toString().equals(transicion01 + "," + isAcepta))
 							  compararTransiciion = true; 
 				  if(!compararTransiciion) 
 				  {
@@ -187,10 +187,10 @@ for(int i=0; i<noAcepta.size();i++) {
 	    				transicion02 += matriz2[x][k] + "_"; 
 	    		
 	    		//Si transicion01 no se encuentra dentro de eAcepta[] e
-	    		if(transicion01.equals(transicion02) && isAcepta != isNoAcepta)
+	    		if(tablatres.equals(transicion02) && isAcepta != isNoAcepta)
     			{
 					  for(int z = 0; z<reducto.size(); z++) 
-							  if(reducto.get(z).toString().equals(transicion01))
+							  if(reducto.get(z).toString().equals(transicion01 + "," + isAcepta))
 								  compararTransiciion = true; 
 					  if(!compararTransiciion) 
 					  {
@@ -215,25 +215,34 @@ for(int i=0; i<noAcepta.size();i++) {
 		// Q2		|{2,4_5} 	= {C0, C2}
 		
 		
+		//Parte sin importancia
+		/*
+		 * for(int x=matriz2.length-1; x<matriz2.length; x++) { boolean
+		 * compararTransiciion = false; transicion02 =""; for(int k=0;
+		 * k<matriz2[0].length; k++) if (k == matriz2[0].length -1) transicion02 +=
+		 * matriz2[x][k]; else transicion02 += matriz2[x][k] + "_"; for(int z = 0;
+		 * z<reducto.size(); z++) for(int r = 0; r<eAceptacion.length; r++)
+		 * if(reducto.get(z).toString() == transicion02 && x !=
+		 * Integer.parseInt(eAceptacion[r])) compararTransiciion = true;
+		 * if(!compararTransiciion) { tablatres.add(String.valueOf(x));
+		 * reducto.add(transicion02); } }
+		 */
 		
-		for(int x=matriz2.length-1; x<matriz2.length; x++) {
-    		boolean compararTransiciion = false;
-    		transicion02 ="";
-    		for(int k=0; k<matriz2[0].length; k++)    
-    			if (k == matriz2[0].length -1)
-    				transicion02 += matriz2[x][k];
-    			else
-    				transicion02 += matriz2[x][k] + "_"; 
-    			for(int z = 0; z<reducto.size(); z++)
-    				for(int r = 0; r<eAceptacion.length; r++)
-    				if(reducto.get(z).toString() == transicion02 && x != Integer.parseInt(eAceptacion[r]))
-    					compararTransiciion = true;
-    			if(!compararTransiciion)
-    			{    				
-    			tablatres.add(String.valueOf(x));
-    			reducto.add(transicion02);
-    			}
-    	}
+		//Parte para meter en un nuevo arraylist los 
+		//elementos correspondientes a los Q0X correspondientes
+		
+		/*	1: {1}
+		 * 	2: {2}
+		 * 	3: {3}
+		 * for (var item: arrayListNombre)
+		 * {
+		 * 		sysout(item)
+		 * }
+		 * 
+		 * for (int i=0; i<arrayListNombre.size(); i++)
+		 * 		sysout(arrayListNombre.get(i))
+		 */ 
+		
 		
 matriz3 = new String[estados][quintupla[0].length];
 		
